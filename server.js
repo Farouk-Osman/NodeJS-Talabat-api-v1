@@ -1,21 +1,19 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
-dotenv.config({ path: './.env' });
+const dbConnection = require('./config/database');
+const categoryRoute = require('./routes/categoryRoute');
 
-mongoose.connect(process.env.DB_URI)
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
-const port = process.env.PORT;
 const app = express();
+dotenv.config({ path: './.env' });
+dbConnection();
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 console.log(`Environment: ${process.env.NODE_ENV}`);
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});c
+app.use(express.json());
+app.use('/api/v1/categories', categoryRoute);
