@@ -65,7 +65,6 @@ const deleteCategory = asyncHandler(async (req, res) => {
     });
 });
 
-
 const getCategoryById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const category = await categoryModel.findById(id);
