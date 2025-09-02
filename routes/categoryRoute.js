@@ -6,9 +6,9 @@ const { createCategory, getCategories, getCategoryById, updateCategory, deleteCa
 
 router.route('/')
     .post(createCategory)
-    .get(getCategories)
+    .get(getCategories);
+router.route('/:id')
+    .get(getCategoryById)
     .put(updateCategory)
     .delete(deleteCategory);
-router.route('/:id')
-    .get(getCategoryById);
 module.exports = router;

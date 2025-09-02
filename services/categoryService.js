@@ -33,7 +33,7 @@ const getCategories = asyncHandler(async (req, res) => {
 
 const updateCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name } = req.body.name;
+    const { name } = req.body;
     if (!name) {
         res.status(400);
         throw new Error('Category name is required');

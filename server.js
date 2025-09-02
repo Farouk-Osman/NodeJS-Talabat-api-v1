@@ -17,3 +17,12 @@ console.log(`Environment: ${process.env.NODE_ENV}`);
 
 app.use(express.json());
 app.use('/api/v1/categories', categoryRoute);
+
+app.all('*', (req, res) => {
+    res.status(404).json({
+        status: 'fail',
+        message: `Can't find ${req.originalUrl} on this server!`
+    });
+});
+
+
