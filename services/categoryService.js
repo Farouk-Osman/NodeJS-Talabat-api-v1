@@ -1,12 +1,13 @@
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const categoryModel = require('../models/categoryModel');
+const ApiError = require('../utils/apiError');
 
 const createCategory = asyncHandler(async (req, res) => {
-    name = req.body.name;
+    const { name } = req.body;
     if (!name) {
         res.status(400);
-        throw new Error('Category name is required');
+        throw new ApiError('Category name is required', 400);
     }
     const category = await categoryModel.create({
         name,
@@ -36,7 +37,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     const { name } = req.body;
     if (!name) {
         res.status(400);
-        throw new Error('Category name is required');
+        throw new ApiError('Category name is required', 400);
     }
     const category = await categoryModel.findByIdAndUpdate(id, {
         name,
@@ -44,7 +45,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     }, { new: true });
     if (!category) {
         res.status(404);
-        throw new Error('Category not found');
+        throw new ApiError('Category not found', 404);
     }
     res.status(200).json({
         status: 'success',
@@ -57,7 +58,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
     const category = await categoryModel.findByIdAndDelete(id);
     if (!category) {
         res.status(404);
-        throw new Error('Category not found');
+        throw new ApiError('Category not found', 404);
     }
     res.status(204).json({
         status: 'success',
@@ -70,7 +71,7 @@ const getCategoryById = asyncHandler(async (req, res) => {
     const category = await categoryModel.findById(id);
     if (!category) {
         res.status(404);
-        throw new Error('Category not found');
+        throw new ApiError('Category not found', 404);
     }
     res.status(200).json({
         status: 'success',
