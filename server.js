@@ -2,26 +2,28 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const dbConnection = require('./config/database');
-const ApiError = require("./utils/apiError");
-const globalErrorHandler = require("./middlewares/errorMiddleware");
-const categoryRoute = require("./routes/categoryRoute");
+const ApiError = require('./utils/apiError');
+const globalErrorHandler = require('./middlewares/errorMiddleware');
+const categoryRoute = require('./routes/categoryRoute');
+const subCategoryRoute = require('./routes/subCategoryRoute');
 
 const app = express();
 
 // Load environment variables
-dotenv.config({ path: "./.env" });
+dotenv.config({ path: './.env' });
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
+app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 console.log(`Environment: ${process.env.NODE_ENV}`);
 
 // Connect to database
 dbConnection();
 
 // Mount Routes
-app.use("/api/v1/categories", categoryRoute);
+app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/subcategories', subCategoryRoute);
 
 // Unhandled routes
 app.use((req, res, next) => {
@@ -36,10 +38,10 @@ const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Rejection:", err.name, err.message);
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err.name, err.message);
   server.close(() => {
-    console.error("Server closed");
+    console.error('Server closed');
     process.exit(1);
   });
 });
