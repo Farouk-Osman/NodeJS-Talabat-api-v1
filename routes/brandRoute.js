@@ -1,4 +1,5 @@
 const express = require('express');
+const { uploadSingleImage } = require('../utils/uploadImage');
 
 const {
   createBrandValidator,
@@ -7,22 +8,20 @@ const {
   deleteBrandValidator,
 } = require('../utils/validators/brandValidator');
 
-
 const {
-    createBrand,
-    getBrands,
-    getBrandById,
-    updateBrand,
-    deleteBrand,
+  createBrand,
+  getBrands,
+  getBrandById,
+  updateBrand,
+  deleteBrand,
 } = require('../services/brandService');
-
 
 const router = express.Router();
 
 router
-    .route('/')
-    .post(createBrandValidator, createBrand)
-    .get(getBrands);
+  .route('/')
+  .post(uploadSingleImage('image'), createBrandValidator, createBrand)
+  .get(getBrands);
 router
     .route('/:id')
     .get(getBrandValidator, getBrandById)

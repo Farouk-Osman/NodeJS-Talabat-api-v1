@@ -6,6 +6,7 @@ const ApiError = require('./utils/apiError');
 const globalErrorHandler = require('./middlewares/errorMiddleware');
 const categoryRoute = require('./routes/categoryRoute');
 const subCategoryRoute = require('./routes/subCategoryRoute');
+const brandRoute = require('./routes/brandRoute');
 
 const app = express();
 
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json({ limit: '20kb' }));
 app.use(express.urlencoded({ extended: true, limit: '20kb' }));
+app.use(express.static('uploads'));
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 console.log(`Environment: ${process.env.NODE_ENV}`);
 
@@ -24,10 +26,9 @@ dbConnection();
 
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
-// Mount subcategories routes
 app.use('/api/v1/categories/:categoryId/subcategories', subCategoryRoute);
-// Mount subcategories routes for direct access
 app.use('/api/v1/subcategories', subCategoryRoute);
+app.use('/api/v1/brands', brandRoute);
 
 // Unhandled routes
 app.use((req, res, next) => {
