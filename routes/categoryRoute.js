@@ -5,7 +5,7 @@ const {
   updateCategoryValidator,
   deleteCategoryValidator,
   createCategoryValidator,
-} = require('../validators/categoryValidator');
+} = require('../utils/validators/categoryValidator');
 
 const router = express.Router();
 

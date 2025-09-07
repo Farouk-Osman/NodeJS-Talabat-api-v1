@@ -4,7 +4,7 @@ const {
   getSubCategoryByIdValidator,
   updateSubCategoryValidator,
   deleteSubCategoryValidator,
-} = require('../validators/subCategoryValidator');
+} = require('../utils/validators/subCategoryValidator');
 
 
 const {
