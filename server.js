@@ -14,7 +14,8 @@ dotenv.config({ path: './.env' });
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '20kb' }));
+app.use(express.urlencoded({ extended: true, limit: '20kb' }));
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 console.log(`Environment: ${process.env.NODE_ENV}`);
 
@@ -23,6 +24,9 @@ dbConnection();
 
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
+// Mount subcategories routes
+app.use('/api/v1/categories/:categoryId/subcategories', subCategoryRoute);
+// Mount subcategories routes for direct access
 app.use('/api/v1/subcategories', subCategoryRoute);
 
 // Unhandled routes

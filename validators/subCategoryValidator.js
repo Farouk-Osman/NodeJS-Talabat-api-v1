@@ -36,10 +36,13 @@ const createSubCategoryValidator = [
     .isLength({ max: 50 })
     .withMessage('SubCategory name must be at most 50 characters long'),
   check('category')
-    .notEmpty()
-    .withMessage('SubCategory must belong to a Category')
+    .optional() // Make category optional in body since it might come from URL
     .isMongoId()
-    .withMessage('Invalid Category ID'),
+    .withMessage('Invalid Category ID format'),
+  check('categoryId') // Add validation for URL parameter
+    .optional()
+    .isMongoId()
+    .withMessage('Invalid Category ID format in URL'),
   validatorMiddleware,
 ];
 

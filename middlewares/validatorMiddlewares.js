@@ -4,7 +4,11 @@ const ApiError = require('../utils/apiError');
 const validatorMiddleware = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new ApiError('Validation error', 400, errors.array()));
+    const errorMessages = errors
+      .array()
+      .map((err) => `${err.path}: ${err.msg}`)
+      .join(', ');
+    return next(new ApiError(errorMessages, 400));
   }
   next();
 };
