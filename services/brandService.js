@@ -1,3 +1,6 @@
+/* eslint-disable node/no-missing-require */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-extraneous-dependencies */
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const sharp = require('sharp');
