@@ -18,3 +18,14 @@ const multerOptions = () => {
 };
 
 exports.uploadSingleImage = (fieldName) => multerOptions().single(fieldName);
+// Helper to upload multiple images (array) for a given field name
+exports.uploadMultipleImages = (fieldName, maxCount = 5) => multerOptions().array(fieldName, maxCount);
+
+// Convenience middleware specifically for product uploads: one cover and multiple images
+exports.uploadProductImages = () => {
+  const upload = multerOptions();
+  return upload.fields([
+    { name: 'imageCover', maxCount: 1 },
+    { name: 'images', maxCount: 5 },
+  ]);
+};

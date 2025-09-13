@@ -150,17 +150,18 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const product = await productModel.findById(id);
-    if (!product) {
-        res.status(404);
-        throw new ApiError('Product not found', 404);
-    }
-    await product.remove();
-    res.status(204).json({
-        status: 'success',
-        data: null
-    });
+  const { id } = req.params;
+  const product = await productModel.findById(id);
+  if (!product) {
+    res.status(404);
+    throw new ApiError('Product not found', 404);
+  }
+  // Use model-level deletion to be compatible across Mongoose versions
+  await productModel.findByIdAndDelete(id);
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
 });
 
 
