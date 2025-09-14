@@ -1,7 +1,9 @@
+/* eslint-disable new-cap */
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const categoryModel = require('../models/categoryModel');
 const ApiError = require('../utils/apiError');
+const apiFeatures = require('../utils/apiFeatures');
 
 const createCategory = asyncHandler(async (req, res) => {
   const { name } = req.body;
@@ -20,14 +22,15 @@ const createCategory = asyncHandler(async (req, res) => {
 });
 
 const getCategories = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 5;
-  const skip = (page - 1) * limit;
-  const categories = await categoryModel.find({}).skip(skip).limit(limit);
+  const apiFeature = new apiFeatures(categoryModel.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const categories = await apiFeature.mongooseQuery;
   res.status(200).json({
     status: 'success',
     results: categories.length,
-    page,
     data: categories,
   });
 });

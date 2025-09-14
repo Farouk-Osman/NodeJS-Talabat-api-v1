@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 /* eslint-disable node/no-missing-require */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -7,6 +8,7 @@ const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const brandModel = require('../models/brand');
 const ApiError = require('../utils/apiError');
+const apiFeatures = require('../utils/apiFeatures');
 
 const createBrand = asyncHandler(async (req, res) => {
   const { name } = req.body;
@@ -46,14 +48,15 @@ const createBrand = asyncHandler(async (req, res) => {
 });
 
 const getBrands = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 5;
-  const skip = (page - 1) * limit;
-  const brands = await brandModel.find({}).skip(skip).limit(limit);
+  const apiFeature = new apiFeatures(brandModel.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const brands = await apiFeature.mongooseQuery;
   res.status(200).json({
     status: 'success',
     results: brands.length,
-    page,
     data: brands,
   });
 });
