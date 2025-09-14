@@ -75,10 +75,15 @@ const getProducts = asyncHandler(async (req, res) => {
         .filter()
         .sort()
         .limitFields()
-        .paginate();
-    const products = await apiFeature.mongooseQuery;
+        .paginate()
+        .search();
+    
+    const { mongooseQuery, paginationResult } = apiFeature;
+    const products = await mongooseQuery;
     res.status(200).json({
         status: 'success',
+        results: products.length,
+        pagination: paginationResult,
         data: {
             products
         }

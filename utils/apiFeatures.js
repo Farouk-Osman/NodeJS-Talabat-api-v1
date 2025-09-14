@@ -15,10 +15,34 @@ class apiFeatures {
         return this;
     }
 
-    paginate() {
+    paginate(countDocuments) {
         const page = parseInt(this.queryString.page, 10) || 1;
         const limit = parseInt(this.queryString.limit, 10) || 10;
         const skip = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const paginationResult = {};
+        paginationResult.currentPage = page;
+        paginationResult.limit = limit;
+        paginationResult.skip = skip;
+        paginationResult.noPages = Math.ceil(this.mongooseQuery.length / limit);
+        
+        if (endIndex < countDocuments) {
+            paginationResult.next = {
+                page: page + 1,
+                limit
+            };
+        }
+
+        if (skip > 0) {
+            paginationResult.prev = {
+                page: page - 1,
+                limit
+            };
+        }
+
+        this.paginationResult = paginationResult;
+
         this.mongooseQuery = this.mongooseQuery.skip(skip).limit(limit);
         return this;
     }
