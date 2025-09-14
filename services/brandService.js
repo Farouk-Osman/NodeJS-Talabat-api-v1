@@ -2,10 +2,7 @@
 /* eslint-disable node/no-missing-require */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-const asyncHandler = require('express-async-handler');
-const slugify = require('slugify');
-const sharp = require('sharp');
-const { v4: uuidv4 } = require('uuid');
+
 const brandModel = require('../models/brand');
 const handlersFactory = require('./handlersFactory');
 
