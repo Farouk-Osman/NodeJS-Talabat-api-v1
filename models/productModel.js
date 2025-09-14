@@ -85,5 +85,20 @@ const productSchema = new mongoose.Schema({
 },   { timestamps: true }
 );
 
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'category',
+    select: 'name',
+  });
+  next();
+});
+
+productSchema.pre(/^findOne/, function (next) {
+  this.populate({
+    path: 'category',
+    select: 'name',
+  });
+  next();
+});
 
 module.exports = mongoose.model('Product', productSchema);
