@@ -1,8 +1,6 @@
-const asyncHandler = require('express-async-handler');
-const slugify = require('slugify');
 const subCategoryModel = require('../models/subCategory');
 const ApiError = require('../utils/apiError');
-const apiFeatures = require('../utils/apiFeatures');
+const handlersFactory = require('./handlersFactory');
 
 const setCategoryIdToBody = (req, res, next) => {
   try {
@@ -29,96 +27,12 @@ const setCategoryIdToBody = (req, res, next) => {
   }
 };
 
-const createSubCategory = asyncHandler(async (req, res) => {
-  const { name, category } = req.body;
-  if (!name || !category) {
-    res.status(400);
-    throw new ApiError('SubCategory name and category are required', 400);
-  }
-  const subCategory = await subCategoryModel.create({
-    name,
-    slug: slugify(name),
-    category,
-  });
-  res.status(201).json({
-    status: 'success',
-    data: subCategory,
-  });
-});
+const createSubCategory = handlersFactory.createOne(subCategoryModel);
+const getSubCategories = handlersFactory.getAll(subCategoryModel);
+const getSubCategoryById = handlersFactory.getOne(subCategoryModel);
+const updateSubCategory = handlersFactory.updateOne(subCategoryModel);
+const deleteSubCategory = handlersFactory.deleteOne(subCategoryModel);
 
-const getSubCategories = asyncHandler(async (req, res) => {
-  // eslint-disable-next-line new-cap
-  const apiFeature = new apiFeatures(subCategoryModel.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate()
-    .search();
-  const { mongooseQuery, paginationResult } = apiFeature;
-  const subCategories = await mongooseQuery;
-  res.status(200).json({
-    status: 'success',
-    results: subCategories.length,
-    pagination: paginationResult,
-    data: {
-      subCategories
-    }
-  });
-});
-
-const updateSubCategory = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const { name, category } = req.body;
-  if (!name || !category) {
-    res.status(400);
-    throw new ApiError('SubCategory name and category are required', 400);
-  }
-  const subCategory = await subCategoryModel.findByIdAndUpdate(
-    id,
-    {
-      name,
-      slug: slugify(name),
-      category,
-    },
-    { new: true }
-  );
-  if (!subCategory) {
-    res.status(404);
-    throw new ApiError('SubCategory not found', 404);
-  }
-  res.status(200).json({
-    status: 'success',
-    data: subCategory,
-  });
-});
-
-const deleteSubCategory = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const subCategory = await subCategoryModel.findByIdAndDelete(id);
-  if (!subCategory) {
-    res.status(404);
-    throw new ApiError('SubCategory not found', 404);
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
-
-const getSubCategoryById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const subCategory = await subCategoryModel
-    .findById(id)
-    .populate({ path: 'category', select: 'name' });
-  if (!subCategory) {
-    res.status(404);
-    throw new ApiError('SubCategory not found', 404);
-  }
-  res.status(200).json({
-    status: 'success',
-    data: subCategory,
-  });
-});
 
 module.exports = {
   createSubCategory,

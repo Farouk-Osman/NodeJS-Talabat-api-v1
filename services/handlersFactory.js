@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const apiError = require('../utils/apiError');
 const apiFeatures = require('../utils/apiFeatures');
 
+
 const deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
@@ -35,7 +36,7 @@ const createOne = (Model) =>
     const doc = await Model.create(req.body);
     res.status(201).json({
       status: 'success',
-      data: doc,
+        data: doc,
     });
   });
 
