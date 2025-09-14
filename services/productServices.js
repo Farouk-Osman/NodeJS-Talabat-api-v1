@@ -72,7 +72,19 @@ const getProducts = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const skip = (page - 1) * limit;
-    const products = await productModel.find({}).skip(skip).limit(limit).populate('category brand subcategories');
+    const queryStringObj = { ...req.query };
+    const excludeFields = ['page', 'limit', 'sort', 'fields'];
+    excludeFields.forEach(field => delete queryStringObj[field]);
+
+    let queryStr = JSON.stringify(queryStringObj);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
+    const queryStringObjParsed = JSON.parse(queryStr);
+
+    const products = await productModel
+      .find(queryStringObjParsed)
+      .skip(skip)
+      .limit(limit)
+      .populate('category brand subcategories');
     res.status(200).json({
         status: 'success',
         data: {
