@@ -52,12 +52,17 @@ const getBrands = asyncHandler(async (req, res) => {
     .filter()
     .sort()
     .limitFields()
-    .paginate();
-  const brands = await apiFeature.mongooseQuery;
+    .paginate()
+    .search();
+  const { mongooseQuery, paginationResult } = apiFeature;
+  const brands = await mongooseQuery;
   res.status(200).json({
     status: 'success',
     results: brands.length,
-    data: brands,
+    pagination: paginationResult,
+    data: {
+      brands
+    }
   });
 });
 

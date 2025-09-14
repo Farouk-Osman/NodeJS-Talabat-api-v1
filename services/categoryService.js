@@ -27,11 +27,15 @@ const getCategories = asyncHandler(async (req, res) => {
     .sort()
     .limitFields()
     .paginate();
-  const categories = await apiFeature.mongooseQuery;
+  const { mongooseQuery, paginationResult } = apiFeature;
+  const categories = await mongooseQuery;
   res.status(200).json({
     status: 'success',
     results: categories.length,
-    data: categories,
+    pagination: paginationResult,
+    data: {
+      categories
+    }
   });
 });
 

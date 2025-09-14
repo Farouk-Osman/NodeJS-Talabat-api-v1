@@ -52,12 +52,17 @@ const getSubCategories = asyncHandler(async (req, res) => {
     .filter()
     .sort()
     .limitFields()
-    .paginate();
-  const subCategories = await apiFeature.mongooseQuery;
+    .paginate()
+    .search();
+  const { mongooseQuery, paginationResult } = apiFeature;
+  const subCategories = await mongooseQuery;
   res.status(200).json({
     status: 'success',
     results: subCategories.length,
-    data: subCategories,
+    pagination: paginationResult,
+    data: {
+      subCategories
+    }
   });
 });
 
