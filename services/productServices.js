@@ -6,6 +6,8 @@ const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const productModel = require('../models/productModel');
 const ApiError = require('../utils/apiError');
+const { mongo } = require('mongoose');
+const apiFeatures = require('../utils/apiFeatures');
 
 const createProduct = asyncHandler(async (req, res) => {
     const { title, description, price, category, subcategories, brand, quantity } = req.body;
@@ -69,22 +71,12 @@ const createProduct = asyncHandler(async (req, res) => {
 
 
 const getProducts = asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = (page - 1) * limit;
-    const queryStringObj = { ...req.query };
-    const excludeFields = ['page', 'limit', 'sort', 'fields'];
-    excludeFields.forEach(field => delete queryStringObj[field]);
-
-    let queryStr = JSON.stringify(queryStringObj);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
-    const queryStringObjParsed = JSON.parse(queryStr);
-
-    const products = await productModel
-      .find(queryStringObjParsed)
-      .skip(skip)
-      .limit(limit)
-      .populate('category brand subcategories');
+    const apiFeature = new apiFeatures(productModel.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+    const products = await apiFeature.mongooseQuery;
     res.status(200).json({
         status: 'success',
         data: {
