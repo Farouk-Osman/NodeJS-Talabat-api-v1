@@ -40,10 +40,10 @@ const createProduct = asyncHandler(async (req, res) => {
     }
     // Create product in the database
     const product = await productModel.create({
+        price,
         title,
         slug: slugify(title),
         description,
-        price,
         category,
         subcategories,
         brand,
